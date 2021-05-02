@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -18,47 +20,64 @@ namespace Business.Concrete
 			_cardal = carDal;
 		}
 
-		public void AddNewCar(Car car)
+		public IResult AddNewCar(Car car)
 		{
-			if (car.Description.Length > 10 && car.DailyPrice > 0 && car.ModelYear > 1900)
+			if (car.Description.Length > 10 && 
+				car.DailyPrice > 0 && 
+				car.ModelYear > 1900)
 			{
 				_cardal.Add(car);
+				return new SuccessResult(Messages.AddedNewCar);
 			}
-			else
-				Console.WriteLine("Bilgiler eklenemedi!");
+			return new ErrorResult(Messages.NotAddedNewCar);
 		}
 
-		public List<Car> GetAll()
+		public IDataResult<List<Car>> GetAll()
 		{
-			// Business Codes
-			// if statments
-			// authority control
-			return _cardal.GetAll();
+			var result = _cardal.GetAll();
+			if (result == null)
+				return new ErrorDataResult<List<Car>>(Messages.Empty);
+			return new SuccessDataResult<List<Car>>(result);
 		}
 
-		public Car GetById(int id)
+		public IDataResult<Car> GetById(int id)
 		{
-			return _cardal.Get(i => i.CarId == id);
+			var result = _cardal.Get(i => i.CarId == id);
+			if (result == null)
+				return new ErrorDataResult<Car>(Messages.InvalidValue);
+			return new SuccessDataResult<Car>(result);
 		}
 
-		public List<CarDetailDto> GetCarDetails()
+		public IDataResult<List<CarDetailDto>> GetCarDetails()
 		{
-			return _cardal.GetCarDetails();
+			var result = _cardal.GetCarDetails();
+			if (result == null)
+				return new ErrorDataResult<List<CarDetailDto>>(Messages.Empty);
+			return new SuccessDataResult<List<CarDetailDto>>(result);
 		}
 
-		public CarDetailDto GetCarDetailsById(int id)
+		public IDataResult<CarDetailDto> GetCarDetailsById(int id)
 		{
-			return _cardal.GetCarDetailsById(id);
+			var result = _cardal.GetCarDetailsById(id);
+			if (result == null)
+				return new ErrorDataResult<CarDetailDto>(Messages.InvalidValue);
+			return new SuccessDataResult<CarDetailDto>(result);
 		}
 
-		public List<Car> GetCarsByBrandId(int id)
+		public IDataResult<List<Car>> GetCarsByBrandId(int id)
 		{
-			return _cardal.GetAll(p => p.BrandId==id);
+			var result = _cardal.GetAll(p => p.BrandId==id);
+			if (result == null)
+				return new ErrorDataResult<List<Car>>(Messages.InvalidValue);
+			return new SuccessDataResult<List<Car>>(result);
 		}
 
-		public List<Car> GetCarsByColorId(int id)
+		public IDataResult<List<Car>> GetCarsByColorId(int id)
 		{
-			return _cardal.GetAll(p => p.ColorId == id);
+			var result = _cardal.GetAll(p => p.ColorId == id);
+			if (result == null)
+				return new ErrorDataResult<List<Car>>(Messages.InvalidValue);
+			return new SuccessDataResult<List<Car>>(result);
 		}
 
 	}

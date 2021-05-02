@@ -11,7 +11,7 @@ namespace ConsoleUI
 	{
 		static void Main(string[] args)
 		{
-			// 2.5.2021 - 3.00 A.M. All function tested.
+			// 2.5.2021 - 3.30 P.M. All function tested.
 			CarManager carManager = new CarManager(new EfCarDal());
 			ColorManager colorManager = new ColorManager(new EfColorDal());
 			BrandManager brandManager = new BrandManager(new EfBrandDal());
@@ -47,30 +47,51 @@ namespace ConsoleUI
 			//brandManager.AddNewBrand(brand2);
 
 
-			List<CarDetailDto> cars = carManager.GetCarDetails();
+			var cars = carManager.GetCarDetails();
 
-			foreach (var c in cars)
+			if (cars.Success)
 			{
-				Console.WriteLine(c.CarId +". "+ c.BrandName+" "+c.DailyPrice+" "+c.ColorName);
+				foreach (var c in cars.Data)
+				{
+					Console.WriteLine(c.CarId + ". " + c.BrandName + " " + c.DailyPrice + " " + c.ColorName);
+				}
 			}
+			else
+				Console.WriteLine(cars.Message);
 
-			List<Color> colors = colorManager.GetAll();
-			foreach (var color in colors)
+			var colors = colorManager.GetAll();
+			if (colors.Success)
 			{
-				Console.WriteLine(color.ColorId +" "+ color.ColorName);
+				foreach (var color in colors.Data)
+				{
+					Console.WriteLine(color.ColorId + " " + color.ColorName);
+				}
 			}
+			else
+				Console.WriteLine(colors.Message);
 
-			List<Brand> brands = brandManager.GetAll();
-			foreach (var brand in brands)
+			var brands = brandManager.GetAll();
+			if (brands.Success)
 			{
-				Console.WriteLine(brand.BrandId + " " + brand.BrandName);
+				foreach (var brand in brands.Data)
+				{
+					Console.WriteLine(brand.BrandId + " " + brand.BrandName);
+				}
 			}
+			else
+				Console.WriteLine(brands.Message);
 
-			Car gettedCar = carManager.GetById(1);
-			Console.WriteLine(gettedCar.CarId +" "+ gettedCar.Description);
+			var gettedCar = carManager.GetById(5);
+			if (gettedCar.Success)
+				Console.WriteLine(gettedCar.Data.CarId + " " + gettedCar.Data.Description);
+			else
+				Console.WriteLine(gettedCar.Message);
 
-			CarDetailDto carDetail = carManager.GetCarDetailsById(1);
-			Console.WriteLine(carDetail.CarId + ". " + carDetail.BrandName + " " + carDetail.DailyPrice + " " + carDetail.ColorName);
+			var carDetail = carManager.GetCarDetailsById(3);
+			if (carDetail.Success)
+				Console.WriteLine(carDetail.Data.CarId + ". " + carDetail.Data.BrandName + " " + carDetail.Data.DailyPrice + " " + carDetail.Data.ColorName);
+			else
+				Console.WriteLine(carDetail.Message);
 		}
 	}
 }
