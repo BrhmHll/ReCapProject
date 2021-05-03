@@ -18,5 +18,10 @@ namespace Business.Constants
 		public static string Successful = "İşlem başarılı!";
 
 		public static string Empty = "Liste boş!";
+
+		public static string InvalidEmail = "Geçersiz email!";
+		public static string InvalidName = "Geçersiz isim veya soyisim!";
+		public static string InvalidPassword = "Parola en az 8 haneli olmalıdır!";
+		public static string InvalidCompanyName = "Şirket ismi daha uzun olmalıdır!";
 	}
 }
