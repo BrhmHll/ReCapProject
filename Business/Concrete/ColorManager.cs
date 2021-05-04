@@ -13,16 +13,16 @@ namespace Business.Concrete
 {
 	public class ColorManager : IColorService
 	{
-		IColorDal colorDal;
+		IColorDal _colorDal;
 		public ColorManager(IColorDal colorDal)
 		{
-			this.colorDal = colorDal;
+			this._colorDal = colorDal;
 		}
 		public IResult AddNewColor(Color color)
 		{
 			if (color.ColorName.Length > 2)
 			{
-				colorDal.Add(color);
+				_colorDal.Add(color);
 				return new SuccessResult(Messages.Successful);
 			}
 			return new ErrorResult(Messages.InvalidValue);
@@ -30,10 +30,46 @@ namespace Business.Concrete
 
 		public IDataResult<List<Color>> GetAll()
 		{
-			var result = colorDal.GetAll();
-			if (result == null)
+			var result = _colorDal.GetAll();
+			if (result.Count == 0)
 				return new ErrorDataResult<List<Color>>(Messages.Empty);
 			return new SuccessDataResult<List<Color>>(result);
+		}
+
+		public IDataResult<Color> GetColorById(int colorId)
+		{
+			var color =_colorDal.Get(c => c.ColorId == colorId);
+			if (color == null)
+			{
+				return new ErrorDataResult<Color>(Messages.InvalidValue);
+			}
+			return new SuccessDataResult<Color>(color,Messages.Successful);
+		}
+
+		public IResult RemoveColor(Color color)
+		{
+			try
+			{
+				_colorDal.Delete(color);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
+		}
+
+		public IResult UpdateColor(Color color)
+		{
+			try
+			{
+				_colorDal.Update(color);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
 		}
 	}
 }

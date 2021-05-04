@@ -13,18 +13,18 @@ namespace Business.Concrete
 {
 	public class BrandManager : IBrandService
 	{
-		IBrandDal brandDal;
+		IBrandDal _brandDal;
 
 		public BrandManager(IBrandDal brandDal)
 		{
-			this.brandDal = brandDal;
+			_brandDal = brandDal;
 		}
 
 		public IResult AddNewBrand(Brand brand)
 		{
 			if (brand.BrandName.Length > 2)
 			{
-				brandDal.Add(brand);
+				_brandDal.Add(brand);
 				return new SuccessResult(Messages.Successful);
 			}
 			return new ErrorResult(Messages.InvalidValue);
@@ -33,10 +33,46 @@ namespace Business.Concrete
 
 		public IDataResult<List<Brand>> GetAll()
 		{
-			var result = brandDal.GetAll();
+			var result = _brandDal.GetAll();
 			if (result == null)
 				return new ErrorDataResult<List<Brand>>(Messages.Empty);
 			return new SuccessDataResult<List<Brand>>(result);
+		}
+
+		public IDataResult<Brand> GetBrandById(int brandId)
+		{
+			var brand = _brandDal.Get(b => b.BrandId == brandId);
+			if (brand == null)
+			{
+				return new ErrorDataResult<Brand>(Messages.InvalidValue);
+			}
+			return new SuccessDataResult<Brand>(brand, Messages.Successful);
+		}
+
+		public IResult RemoveBrand(Brand brand)
+		{
+			try
+			{
+				_brandDal.Delete(brand);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
+		}
+
+		public IResult UpdateBrand(Brand brand)
+		{
+			try
+			{
+				_brandDal.Update(brand);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
 		}
 	}
 }

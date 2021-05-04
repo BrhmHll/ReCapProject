@@ -23,5 +23,9 @@ namespace Business.Constants
 		public static string InvalidName = "Geçersiz isim veya soyisim!";
 		public static string InvalidPassword = "Parola en az 8 haneli olmalıdır!";
 		public static string InvalidCompanyName = "Şirket ismi daha uzun olmalıdır!";
+
+		public static string Error = "Hata! Lütfen tekrar deneyiniz.";
+
+		public static string CarNotAvaiable = "Araba zaten kiralanmış, tekrar kiralanamaz!";
 	}
 }

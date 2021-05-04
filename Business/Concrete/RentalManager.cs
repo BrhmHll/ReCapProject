@@ -14,16 +14,19 @@ namespace Business.Concrete
 {
 	public class RentalManager : IRentalService
 	{
-		IRentalDal rentalDal;
-		public RentalManager(IRentalDal rentalDal)
+		IRentalDal _rentalDal;
+		ICarDal _carDal;
+
+		public RentalManager(IRentalDal rentalDal, ICarDal carDal)
 		{
-			this.rentalDal = rentalDal;
+			_rentalDal = rentalDal;
+			_carDal = carDal;
 		}
 
 		public IDataResult<List<Rental>> GetAll()
 		{
-			var result = rentalDal.GetAll();
-			if (result == null)
+			var result = _rentalDal.GetAll();
+			if (result.Count == 0)
 			{
 				return new ErrorDataResult<List<Rental>>(Messages.Empty);
 			}
@@ -32,7 +35,7 @@ namespace Business.Concrete
 
 		public IDataResult<Rental> GetById(int id)
 		{
-			var result = rentalDal.Get(r => r.Id == id);
+			var result = _rentalDal.Get(r => r.Id == id);
 			if (result == null)
 			{
 				return new ErrorDataResult<Rental>(Messages.InvalidValue);
@@ -42,8 +45,8 @@ namespace Business.Concrete
 
 		public IDataResult<List<RentalDetailDto>> GetRentalDetails()
 		{
-			var result = rentalDal.GetRentalDetails();
-			if (result == null)
+			var result = _rentalDal.GetRentalDetails();
+			if (result.Count == 0)
 			{
 				return new ErrorDataResult<List<RentalDetailDto>>(Messages.Empty);
 			}
@@ -52,13 +55,55 @@ namespace Business.Concrete
 
 		public IDataResult<RentalDetailDto> GetRentalDetailsById(int id)
 		{
-			throw new NotImplementedException();
+			var result = _rentalDal.GetRentalDetailsById(id);
+			if (result == null)
+			{
+				return new ErrorDataResult<RentalDetailDto>(Messages.Empty);
+			}
+			return new SuccessDataResult<RentalDetailDto>(result);
 		}
 
 		public IResult Rental(Rental rental)
 		{
-			rentalDal.Add(rental);
-			return new SuccessResult(Messages.Successful);
+			try
+			{
+				var car = _carDal.Get(c => c.CarId == rental.CarId);
+				if (car == null)
+					return new ErrorResult(Messages.InvalidValue);
+				if (car.Available == false)
+					return new ErrorResult(Messages.CarNotAvaiable);
+				car.Available = false;
+				_carDal.Update(car);
+				rental.ReturnDate = default;
+				if (rental.RentDate.Year <= DateTime.Now.Year)
+					rental.RentDate = DateTime.Now;
+				_rentalDal.Add(rental);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
+		}
+
+		public IResult Return(Rental rental)
+		{
+			try
+			{
+				Rental _rental = _rentalDal.Get(r => r.Id == rental.Id);
+				_rental.ReturnDate = rental.ReturnDate;
+
+				Car car = _carDal.Get(c => c.CarId == _rental.CarId);
+				car.Available = true;
+				_carDal.Update(car);
+
+				_rentalDal.Update(_rental);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
 		}
 	}
 }

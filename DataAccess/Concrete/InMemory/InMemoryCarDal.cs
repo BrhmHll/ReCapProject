@@ -17,11 +17,11 @@ namespace DataAccess.Concrete.InMemory
 		{
 			_cars = new List<Car>
 			{
-				new Car{CarId = 1, BrandId = 1, ColorId = 1, DailyPrice = 120, Description = "Family Size", ModelYear = 2018 },
-				new Car{CarId = 2, BrandId = 1, ColorId = 2, DailyPrice = 100, Description = "Chip", ModelYear = 2013 },
-				new Car{CarId = 3, BrandId = 2, ColorId = 1, DailyPrice = 300, Description = "Sport Car", ModelYear = 2020 },
-				new Car{CarId = 4, BrandId = 3, ColorId = 3, DailyPrice = 150, Description = "Standart", ModelYear = 2018 },
-				new Car{CarId = 5, BrandId = 3, ColorId = 4, DailyPrice = 160, Description = "Standart", ModelYear = 2019 }
+				//new Car{CarId = 1, BrandId = 1, ColorId = 1, DailyPrice = 120, Description = "Family Size", ModelYear = 2018 },
+				//new Car{CarId = 2, BrandId = 1, ColorId = 2, DailyPrice = 100, Description = "Chip", ModelYear = 2013 },
+				//new Car{CarId = 3, BrandId = 2, ColorId = 1, DailyPrice = 300, Description = "Sport Car", ModelYear = 2020 },
+				//new Car{CarId = 4, BrandId = 3, ColorId = 3, DailyPrice = 150, Description = "Standart", ModelYear = 2018 },
+				//new Car{CarId = 5, BrandId = 3, ColorId = 4, DailyPrice = 160, Description = "Standart", ModelYear = 2019 }
 			};
 		}
 		public void Add(Car car)
@@ -68,7 +68,7 @@ namespace DataAccess.Concrete.InMemory
 		public void Update(Car car)
 		{
 			Car CarToUpdate = _cars.SingleOrDefault(c => c.CarId == car.CarId);
-			CarToUpdate.CarId = car.CarId;
+			//CarToUpdate.CarId = car.CarId;
 			CarToUpdate.BrandId = car.BrandId;
 			CarToUpdate.ColorId = car.ColorId;
 			CarToUpdate.DailyPrice = car.DailyPrice;

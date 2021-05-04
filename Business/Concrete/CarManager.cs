@@ -22,20 +22,29 @@ namespace Business.Concrete
 
 		public IResult AddNewCar(Car car)
 		{
-			if (car.Description.Length > 10 && 
-				car.DailyPrice > 0 && 
-				car.ModelYear > 1900)
+			try
 			{
-				_cardal.Add(car);
-				return new SuccessResult(Messages.AddedNewCar);
+				if (car.Description.Length > 10 &&
+				car.DailyPrice > 0 &&
+				car.ModelYear > 1900)
+				{
+					_cardal.Add(car);
+					return new SuccessResult(Messages.AddedNewCar);
+				}
+				return new ErrorResult(Messages.InvalidValue);
 			}
-			return new ErrorResult(Messages.NotAddedNewCar);
+			catch (Exception)
+			{
+
+				return new ErrorResult(Messages.Error);
+			}
+			
 		}
 
 		public IDataResult<List<Car>> GetAll()
 		{
 			var result = _cardal.GetAll();
-			if (result == null)
+			if (result.Count == 0)
 				return new ErrorDataResult<List<Car>>(Messages.Empty);
 			return new SuccessDataResult<List<Car>>(result);
 		}
@@ -67,7 +76,7 @@ namespace Business.Concrete
 		public IDataResult<List<Car>> GetCarsByBrandId(int id)
 		{
 			var result = _cardal.GetAll(p => p.BrandId==id);
-			if (result == null)
+			if (result.Count == 0)
 				return new ErrorDataResult<List<Car>>(Messages.InvalidValue);
 			return new SuccessDataResult<List<Car>>(result);
 		}
@@ -75,10 +84,36 @@ namespace Business.Concrete
 		public IDataResult<List<Car>> GetCarsByColorId(int id)
 		{
 			var result = _cardal.GetAll(p => p.ColorId == id);
-			if (result == null)
+			if (result.Count == 0)
 				return new ErrorDataResult<List<Car>>(Messages.InvalidValue);
 			return new SuccessDataResult<List<Car>>(result);
 		}
 
+		public IResult RemoveCar(Car car)
+		{
+			try
+			{
+				_cardal.Delete(car);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
+				
+		}
+
+		public IResult UpdateCar(Car car)
+		{
+			try
+			{
+				_cardal.Update(car);
+				return new SuccessResult(Messages.Successful);
+			}
+			catch
+			{
+				return new ErrorResult(Messages.Error);
+			}
+		}
 	}
 }

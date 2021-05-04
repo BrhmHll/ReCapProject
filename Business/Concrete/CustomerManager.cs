@@ -13,11 +13,11 @@ namespace Business.Concrete
 {
 	public class CustomerManager : ICustomerService
 	{
-		ICustomerDal customerDal;
+		ICustomerDal _customerDal;
 
 		public CustomerManager(ICustomerDal customerDal)
 		{
-			this.customerDal = customerDal;
+			_customerDal = customerDal;
 		}
 
 		public IResult AddNewCustomer(Customer customer)
@@ -26,13 +26,13 @@ namespace Business.Concrete
 			{
 				return new ErrorResult(Messages.InvalidCompanyName);
 			}
-			customerDal.Add(customer);
+			_customerDal.Add(customer);
 			return new SuccessResult(Messages.Successful);
 		}
 
 		public IDataResult<List<Customer>> GetAll()
 		{
-			var result = customerDal.GetAll();
+			var result = _customerDal.GetAll();
 			if (result == null)
 			{
 				return new ErrorDataResult<List<Customer>>(Messages.Empty);
@@ -40,15 +40,23 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Customer>>(result);
 		}
 
+		public IDataResult<Customer> GetUserById(int customerId)
+		{
+			var customer = _customerDal.Get(u => u.UserId == customerId);
+			if (customer == null)
+				return new ErrorDataResult<Customer>(customer);
+			return new SuccessDataResult<Customer>(customer);
+		}
+
 		public IResult RemoveCustomer(Customer customer)
 		{
-			customerDal.Delete(customer);
+			_customerDal.Delete(customer);
 			return new SuccessResult(Messages.Successful);
 		}
 
 		public IResult UpdateCustomer(Customer customer)
 		{
-			customerDal.Update(customer);
+			_customerDal.Update(customer);
 			return new SuccessResult(Messages.Successful);
 		}
 	}

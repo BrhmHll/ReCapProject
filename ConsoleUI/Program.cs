@@ -34,13 +34,12 @@ namespace ConsoleUI
 			//GetAllBrandTest(brandManager);
 
 			//Rental
-			RentalManager rentalManager = new RentalManager(new EfRentalDal());
+			RentalManager rentalManager = new RentalManager(new EfRentalDal(), new EfCarDal());
 			//RentalTest(rentalManager);
 			//GetAllRental(rentalManager);
 			//GetRentalByIdTest(rentalManager);
 			//GetRentalDetailsById(rentalManager);
-			//GetAllRentalDetails(rentalManager);
-
+			GetAllRentalDetails(rentalManager);
 
 			//Customer
 			CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
@@ -49,10 +48,8 @@ namespace ConsoleUI
 			//GetAllCustomerTest(customerManager);
 			//RemoveCustomerTest(customerManager);
 
-
-
 			//User
-			//UserManager userManager = new UserManager(new EfUserDal());
+			UserManager userManager = new UserManager(new EfUserDal());
 			//AddNewUserTest(userManager);
 			//GetAllUserTest(userManager);
 			//UpdateUserTest(userManager);
@@ -62,7 +59,6 @@ namespace ConsoleUI
 		private static void RemoveUserTest(UserManager userManager)
 		{
 			User user = new User();
-			user.Id = 3;
 			user.FirstName = "Engin";
 			user.LastName = "Demiroğ";
 			user.Email = "engindemirog0@gmail.com";
@@ -80,7 +76,6 @@ namespace ConsoleUI
 			user.Email = "ibrahimsakar0@gmail.com";
 			user.FirstName = "İbrahim Halil";
 			user.LastName = "SAKAR";
-			user.Id = 3;
 			user.Password = "12345678";
 			var result = userManager.UpdateUser(user);
 			if (result.Success)
@@ -92,7 +87,6 @@ namespace ConsoleUI
 		private static void UpdateCustomerTest(CustomerManager customerManager)
 		{
 			Customer customer = new Customer();
-			customer.UserId = 1;
 			customer.CompanyName = "Hello World Inc.";
 			var result = customerManager.UpdateCustomer(customer);
 			if (result.Success)
@@ -102,7 +96,6 @@ namespace ConsoleUI
 		private static void RemoveCustomerTest(CustomerManager customerManager)
 		{
 			Customer customer = new Customer();
-			customer.UserId = 1;
 			customer.CompanyName = "";
 			var result = customerManager.RemoveCustomer(customer);
 			if (result.Success)
@@ -202,7 +195,6 @@ namespace ConsoleUI
 		private static void AddNewUserTest(UserManager userManager)
 		{
 			User user1 = new User();
-			user1.Id = 3;
 			user1.FirstName = "Engin";
 			user1.LastName = "Demiroğ";
 			user1.Email = "engindemirog0@gmail.com";
@@ -232,7 +224,6 @@ namespace ConsoleUI
 		public static void AddNewCustomerTest(CustomerManager customerManager)
 		{
 			Customer customer = new Customer();
-			customer.UserId = 1;
 			customer.CompanyName = "IHS";
 
 			var result = customerManager.AddNewCustomer(customer);
@@ -261,7 +252,6 @@ namespace ConsoleUI
 			Rental rental = new Rental();
 			rental.CarId = 2;
 			rental.CustomerId = 1;
-			rental.Id = 3;
 			rental.RentDate = DateTime.Now;
 			rental.ReturnDate = default;
 
@@ -332,7 +322,6 @@ namespace ConsoleUI
 		private static void AddNewBrandTest(BrandManager brandManager)
 		{
 			Brand brand1 = new Brand();
-			brand1.BrandId = 3;
 			brand1.BrandName = "Hyundai";
 
 			brandManager.AddNewBrand(brand1);
@@ -341,7 +330,6 @@ namespace ConsoleUI
 		private static void AddNewColorTest(ColorManager colorManager)
 		{
 			Color color1 = new Color();
-			color1.ColorId = 3;
 			color1.ColorName = "Kırmızı";
 
 			colorManager.AddNewColor(color1);
@@ -350,7 +338,6 @@ namespace ConsoleUI
 		private static void AddNewCarTest(CarManager carManager)
 		{
 			Car car1 = new Car();
-			car1.CarId = 2;
 			car1.ModelYear = 1021;
 			car1.BrandId = 2;
 			car1.ColorId = 2;
