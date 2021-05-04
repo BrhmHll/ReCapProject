@@ -48,7 +48,24 @@ namespace WebAPI.Controllers
 			return BadRequest(result);
 		}
 
-		//TODO: Get Rentals Details / ById
+		[HttpGet("getallrentaldetails")]
+		public IActionResult GetAllRentalDetails()
+		{
+			var result = _rentalService.GetRentalDetails();
+			if (result.Success)
+				return Ok(result);
+			return BadRequest(result);
+		}
+
+		[HttpGet("getrentaldetailsbyid")]
+		public IActionResult GetRentalDetailsById(int rentalId)
+		{
+			var result = _rentalService.GetRentalDetailsById(rentalId);
+			if (result.Success)
+				return Ok(result);
+			return BadRequest(result);
+		}
+
 
 	}
 }
