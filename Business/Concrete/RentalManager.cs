@@ -17,12 +17,12 @@ namespace Business.Concrete
 	public class RentalManager : IRentalService
 	{
 		IRentalDal _rentalDal;
-		ICarDal _carDal;
+		ICarService _carService;
 
-		public RentalManager(IRentalDal rentalDal, ICarDal carDal)
+		public RentalManager(IRentalDal rentalDal, ICarService carService)
 		{
 			_rentalDal = rentalDal;
-			_carDal = carDal;
+			_carService = carService;
 		}
 
 		public IDataResult<List<Rental>> GetAll()
@@ -70,13 +70,13 @@ namespace Business.Concrete
 		{
 			try
 			{
-				var car = _carDal.Get(c => c.CarId == rental.CarId);
+				var car = _carService.GetById(rental.CarId).Data;
 				if (car == null)
 					return new ErrorResult(Messages.InvalidValue);
 				if (car.Available == false)
 					return new ErrorResult(Messages.CarNotAvaiable);
 				car.Available = false;
-				_carDal.Update(car);
+				_carService.UpdateCar(car);
 				rental.ReturnDate = default;
 				if (rental.RentDate.Year <= DateTime.Now.Year)
 					rental.RentDate = DateTime.Now;
@@ -97,9 +97,9 @@ namespace Business.Concrete
 				Rental _rental = _rentalDal.Get(r => r.Id == rental.Id);
 				_rental.ReturnDate = rental.ReturnDate;
 
-				Car car = _carDal.Get(c => c.CarId == _rental.CarId);
+				Car car = _carService.GetById(rental.CarId).Data;
 				car.Available = true;
-				_carDal.Update(car);
+				_carService.UpdateCar(car);
 
 				_rentalDal.Update(_rental);
 				return new SuccessResult(Messages.Successful);

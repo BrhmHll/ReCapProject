@@ -34,12 +34,12 @@ namespace ConsoleUI
 			//GetAllBrandTest(brandManager);
 
 			//Rental
-			RentalManager rentalManager = new RentalManager(new EfRentalDal(), new EfCarDal());
+			//RentalManager rentalManager = new RentalManager(new EfRentalDal(), new EfCarDal());
 			//RentalTest(rentalManager);
 			//GetAllRental(rentalManager);
 			//GetRentalByIdTest(rentalManager);
 			//GetRentalDetailsById(rentalManager);
-			GetAllRentalDetails(rentalManager);
+			//GetAllRentalDetails(rentalManager);
 
 			//Customer
 			CustomerManager customerManager = new CustomerManager(new EfCustomerDal());

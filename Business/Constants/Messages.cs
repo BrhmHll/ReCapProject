@@ -27,5 +27,11 @@ namespace Business.Constants
 		public static string Error = "Hata! Lütfen tekrar deneyiniz.";
 
 		public static string CarNotAvaiable = "Araba zaten kiralanmış, tekrar kiralanamaz!";
+
+		public static string CarNameExists = "Böyle bir araç adı zaten mevcut!";
+		public static string CarExists = "Böyle bir araç zaten mevcut!";
+		public static string CarNotFound = "Böyle bir araç bulunamadı!!";
+		public static string ImageCountAlert = "Resim sayısı en fazla 5 tane olabilir.";
+		public static string ImageNotFound = "Böyle bir resim bulunamadı!";
 	}
 }

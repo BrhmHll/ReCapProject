@@ -3,6 +3,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -27,6 +28,15 @@ namespace Business.Concrete
 		[ValidationAspect(typeof(CarValidator))]
 		public IResult AddNewCar(Car car)
 		{
+			var result = BusinessRules.Run(CheckIfCarDescriptionExists(car.Description));
+			if (result != null)
+			{
+				return result;
+			}
+			if (CheckIfCarIdExists(car.CarId).Success)
+			{
+				return new ErrorResult(Messages.CarExists);
+			}
 			_cardal.Add(car);
 			return new SuccessResult(Messages.AddedNewCar);			
 		}
@@ -81,30 +91,54 @@ namespace Business.Concrete
 
 		public IResult RemoveCar(Car car)
 		{
-			try
+			if (!CheckIfCarIdExists(car.CarId).Success)
 			{
-				_cardal.Delete(car);
-				return new SuccessResult(Messages.Successful);
+				return new ErrorResult(Messages.CarNotFound);
 			}
-			catch
-			{
-				return new ErrorResult(Messages.InvalidValue);
-			}
-				
+			_cardal.Delete(car);
+			return new SuccessResult(Messages.Successful);
+
 		}
 
 		[ValidationAspect(typeof(CarValidator))]
 		public IResult UpdateCar(Car car)
 		{
-			try
+			var result = BusinessRules.Run(CheckIfCarDescriptionExists(car.Description));
+			if (result != null)
 			{
-				_cardal.Update(car);
-				return new SuccessResult(Messages.Successful);
+				return result;
 			}
-			catch
+			if (!CheckIfCarIdExists(car.CarId).Success)
 			{
-				return new ErrorResult(Messages.Error);
+				return new ErrorResult(Messages.CarNotFound);
 			}
+			_cardal.Update(car);
+			return new SuccessResult();
 		}
+
+
+		// Private Methods
+
+		private IResult CheckIfCarDescriptionExists(string carDescription)
+		{
+			if (_cardal.GetAll(c => c.Description == carDescription).Any())
+			{
+				return new ErrorResult(Messages.CarNameExists);
+			}
+			return new SuccessResult();
+		}
+
+		private IResult CheckIfCarIdExists(int carId)
+		{
+			if (_cardal.GetAll(c => c.CarId == carId).Any())
+			{
+				return new SuccessResult();
+			}
+			return new ErrorResult(Messages.CarExists);
+
+		}
+
+
+
 	}
 }
