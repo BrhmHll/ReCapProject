@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Core.Utilities.Helpers;
 using Core.Utilities.Results;
@@ -26,6 +27,54 @@ namespace Business.Concrete
 			_carService = carService;
 		}
 
+		[SecuredOperation("admin,personel")]
+		public IResult AddImageLink(CarImage carImage)
+		{
+			var countOfImage = _carImageDal.GetAll(i => i.CarId == carImage.CarId).Count();
+			if (countOfImage > 4)
+			{
+				return new ErrorResult(Messages.ImageCountAlert);
+			}
+
+			var carIsExists = _carService.GetById(carImage.CarId);
+			if (!carIsExists.Success)
+			{
+				return new ErrorResult(Messages.CarNotFound);
+			}
+			carImage.Date = DateTime.Now;
+			_carImageDal.Add(carImage);
+			return new SuccessResult(Messages.Successful);
+		}
+
+		[SecuredOperation("admin,personel")]
+		public IResult UpdateImageLink(CarImage carImage)
+		{
+			var isImage = _carImageDal.Get(c => c.Id == carImage.Id);
+			if (isImage == null)
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
+
+			isImage.Date = DateTime.Now;
+			isImage.ImagePath = carImage.ImagePath;
+			_carImageDal.Update(carImage);
+			return new SuccessResult(Messages.Successful);
+		}
+
+		[SecuredOperation("admin,personel")]
+		public IResult DeleteImageLink(CarImage carImage)
+		{
+			var image = _carImageDal.Get(c => c.Id == carImage.Id);
+			if (image == null)
+			{
+				return new ErrorResult(Messages.InvalidValue);
+			}
+
+			_carImageDal.Delete(carImage);
+			return new SuccessResult(Messages.Successful);
+		}
+
+		[SecuredOperation("admin,personel")]
 		public IResult AddImage(IFormFile file, CarImage carImage)
 		{
 			var countOfImage = _carImageDal.GetAll(i => i.CarId == carImage.CarId).Count();
@@ -52,7 +101,7 @@ namespace Business.Concrete
 			_carImageDal.Add(carImage);
 			return new SuccessResult(Messages.Successful);
 		}
-
+		[SecuredOperation("admin,personel")]
 		public IResult DeleteImage(CarImage carImage)
 		{
 			var image = _carImageDal.Get(c => c.Id == carImage.Id);
@@ -65,7 +114,7 @@ namespace Business.Concrete
 			_carImageDal.Delete(carImage);
 			return new SuccessResult(Messages.Successful);
 		}
-
+		[SecuredOperation("admin,personel")]
 		public IDataResult<CarImage> Get(int id)
 		{
 			var image = _carImageDal.Get(i => i.Id == id);
@@ -75,7 +124,7 @@ namespace Business.Concrete
 			}
 			return new SuccessDataResult<CarImage>();
 		}
-
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<CarImage>> GetAllImagesByCarId(int carId)
 		{
 			var images = _carImageDal.GetAll(i => i.CarId == carId);
@@ -95,7 +144,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<CarImage>>(images);
 
 		}
-
+		[SecuredOperation("admin,personel")]
 		public IDataResult<CarImage> GetImageByCarId(int carId)
 		{
 			var result = GetAllImagesByCarId(carId);
@@ -106,7 +155,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<CarImage>(result.Data[0]);
 		}
 
-
+		[SecuredOperation("admin,personel")]
 		public IResult UpdateImage(IFormFile file, CarImage carImage)
 		{
 			var isImage = _carImageDal.Get(c => c.Id == carImage.Id);

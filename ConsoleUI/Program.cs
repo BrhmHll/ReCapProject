@@ -49,14 +49,14 @@ namespace ConsoleUI
 			//RemoveCustomerTest(customerManager);
 
 			//User
-			UserManager userManager = new UserManager(new EfUserDal());
+			UserManager2 userManager = new UserManager2(new EfUserDal());
 			//AddNewUserTest(userManager);
 			//GetAllUserTest(userManager);
 			//UpdateUserTest(userManager);
 			//RemoveUserTest(userManager);
 		}
 
-		private static void RemoveUserTest(UserManager userManager)
+		private static void RemoveUserTest(UserManager2 userManager)
 		{
 			User user = new User();
 			user.FirstName = "Engin";
@@ -70,7 +70,7 @@ namespace ConsoleUI
 				Console.WriteLine(result.Message);
 		}
 
-		private static void UpdateUserTest(UserManager userManager)
+		private static void UpdateUserTest(UserManager2 userManager)
 		{
 			User user = new User();
 			user.Email = "ibrahimsakar0@gmail.com";
@@ -178,7 +178,7 @@ namespace ConsoleUI
 				Console.WriteLine(car.Message);
 		}
 
-		private static void GetAllUserTest(UserManager userManager)
+		private static void GetAllUserTest(UserManager2 userManager)
 		{
 			var users = userManager.GetAll();
 			if (users.Success)
@@ -192,7 +192,7 @@ namespace ConsoleUI
 				Console.WriteLine(users.Message);
 		}
 
-		private static void AddNewUserTest(UserManager userManager)
+		private static void AddNewUserTest(UserManager2 userManager)
 		{
 			User user1 = new User();
 			user1.FirstName = "Engin";

@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -25,11 +26,12 @@ namespace Business.Concrete
 			_cardal = carDal;
 		}
 
+		[SecuredOperation("admin")]
 		[ValidationAspect(typeof(CarValidator))]
 		public IResult AddNewCar(Car car)
 		{
 			var result = BusinessRules.Run(CheckIfCarDescriptionExists(car.Description));
-			if (result != null)
+			if (result.Success == false)
 			{
 				return result;
 			}
@@ -41,6 +43,7 @@ namespace Business.Concrete
 			return new SuccessResult(Messages.AddedNewCar);			
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<Car>> GetAll()
 		{
 			var result = _cardal.GetAll();
@@ -49,6 +52,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Car>>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<Car> GetById(int id)
 		{
 			var result = _cardal.Get(i => i.CarId == id);
@@ -57,6 +61,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<Car>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<CarDetailDto>> GetCarDetails()
 		{
 			var result = _cardal.GetCarDetails();
@@ -65,6 +70,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<CarDetailDto>>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<CarDetailDto> GetCarDetailsById(int id)
 		{
 			var result = _cardal.GetCarDetailsById(id);
@@ -73,6 +79,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<CarDetailDto>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<Car>> GetCarsByBrandId(int id)
 		{
 			var result = _cardal.GetAll(p => p.BrandId==id);
@@ -81,6 +88,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Car>>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<Car>> GetCarsByColorId(int id)
 		{
 			var result = _cardal.GetAll(p => p.ColorId == id);
@@ -88,7 +96,7 @@ namespace Business.Concrete
 				return new ErrorDataResult<List<Car>>(Messages.InvalidValue);
 			return new SuccessDataResult<List<Car>>(result);
 		}
-
+		[SecuredOperation("admin")]
 		public IResult RemoveCar(Car car)
 		{
 			if (!CheckIfCarIdExists(car.CarId).Success)
@@ -100,14 +108,10 @@ namespace Business.Concrete
 
 		}
 
+		[SecuredOperation("admin,personel")]
 		[ValidationAspect(typeof(CarValidator))]
 		public IResult UpdateCar(Car car)
 		{
-			var result = BusinessRules.Run(CheckIfCarDescriptionExists(car.Description));
-			if (result != null)
-			{
-				return result;
-			}
 			if (!CheckIfCarIdExists(car.CarId).Success)
 			{
 				return new ErrorResult(Messages.CarNotFound);

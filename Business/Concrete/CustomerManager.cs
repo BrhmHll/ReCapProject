@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -22,13 +23,14 @@ namespace Business.Concrete
 			_customerDal = customerDal;
 		}
 
+		[SecuredOperation("admin")]
 		[ValidationAspect(typeof(CustomerValidator))]
 		public IResult AddNewCustomer(Customer customer)
 		{
 			_customerDal.Add(customer);
 			return new SuccessResult(Messages.Successful);
 		}
-
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<Customer>> GetAll()
 		{
 			var result = _customerDal.GetAll();
@@ -39,6 +41,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Customer>>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<Customer> GetUserById(int customerId)
 		{
 			var customer = _customerDal.Get(u => u.UserId == customerId);
@@ -47,6 +50,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<Customer>(customer);
 		}
 
+		[SecuredOperation("admin")]
 		[ValidationAspect(typeof(CustomerValidator))]
 		public IResult RemoveCustomer(Customer customer)
 		{
@@ -54,6 +58,7 @@ namespace Business.Concrete
 			return new SuccessResult(Messages.Successful);
 		}
 
+		[SecuredOperation("admin")]
 		[ValidationAspect(typeof(CustomerValidator))]
 		public IResult UpdateCustomer(Customer customer)
 		{

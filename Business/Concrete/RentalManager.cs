@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -25,6 +26,7 @@ namespace Business.Concrete
 			_carService = carService;
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<Rental>> GetAll()
 		{
 			var result = _rentalDal.GetAll();
@@ -35,6 +37,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Rental>>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<Rental> GetById(int id)
 		{
 			var result = _rentalDal.Get(r => r.Id == id);
@@ -45,6 +48,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<Rental>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<List<RentalDetailDto>> GetRentalDetails()
 		{
 			var result = _rentalDal.GetRentalDetails();
@@ -55,6 +59,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<RentalDetailDto>>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		public IDataResult<RentalDetailDto> GetRentalDetailsById(int id)
 		{
 			var result = _rentalDal.GetRentalDetailsById(id);
@@ -65,39 +70,45 @@ namespace Business.Concrete
 			return new SuccessDataResult<RentalDetailDto>(result);
 		}
 
+		[SecuredOperation("admin,personel")]
 		[ValidationAspect(typeof(RentalValidator))]
 		public IResult Rental(Rental rental)
 		{
 			try
 			{
-				var car = _carService.GetById(rental.CarId).Data;
+				Car car = _carService.GetById(rental.CarId).Data;
 				if (car == null)
 					return new ErrorResult(Messages.InvalidValue);
 				if (car.Available == false)
 					return new ErrorResult(Messages.CarNotAvaiable);
 				car.Available = false;
-				_carService.UpdateCar(car);
-				rental.ReturnDate = default;
-				if (rental.RentDate.Year <= DateTime.Now.Year)
-					rental.RentDate = DateTime.Now;
+				var carUpdateResult = _carService.UpdateCar(car);
+				if (!carUpdateResult.Success)
+				{
+					return carUpdateResult;
+				}
+				rental.RentDate = DateTime.Now;
 				_rentalDal.Add(rental);
 				return new SuccessResult(Messages.Successful);
 			}
-			catch
+			catch(Exception e)
 			{
-				return new ErrorResult(Messages.InvalidValue);
+				return new ErrorResult(e.InnerException.Message);
 			}
 		}
 
+		[SecuredOperation("admin,personel")]
 		[ValidationAspect(typeof(RentalValidator))]
 		public IResult Return(Rental rental)
 		{
 			try
 			{
 				Rental _rental = _rentalDal.Get(r => r.Id == rental.Id);
+				if (_rental == null)
+					return new ErrorResult(Messages.InvalidValue);
 				_rental.ReturnDate = rental.ReturnDate;
 
-				Car car = _carService.GetById(rental.CarId).Data;
+				Car car = _carService.GetById(_rental.CarId).Data;
 				car.Available = true;
 				_carService.UpdateCar(car);
 

@@ -13,16 +13,10 @@ namespace Business.ValidationRules.FluentValidation
 		public CarValidator()
 		{
 			RuleFor(c => c.Description).NotEmpty();
-			RuleFor(c => c.Description).MinimumLength(10);
+			RuleFor(c => c.Description).MinimumLength(5);
 			RuleFor(c => c.DailyPrice).NotEmpty();
 			RuleFor(c => c.DailyPrice).GreaterThan(0);
-			RuleFor(c => c.Description).Must(TestFunciton);
 			RuleFor(c => c.ModelYear).GreaterThan(1950);
-		}
-
-		private bool TestFunciton(string arg)
-		{
-			return arg.StartsWith("A");
 		}
 	}
 }

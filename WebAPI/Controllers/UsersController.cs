@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Entities.Concrete;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,9 @@ namespace WebAPI.Controllers
 	[ApiController]
 	public class UsersController : ControllerBase
 	{
-		private IUserService _userService;
+		private IUserService2 _userService;
 
-		public UsersController(IUserService userService)
+		public UsersController(IUserService2 userService)
 		{
 			_userService = userService;
 		}
