@@ -1,5 +1,6 @@
 using Business.Abstract;
 using Business.Concrete;
+using Core.DependencyResolver;
 using Core.Extensions;
 using Core.Utilities.IoC;
 using Core.Utilities.Security.Encryption;
@@ -9,6 +10,7 @@ using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -37,7 +39,13 @@ namespace WebAPI
 		public void ConfigureServices(IServiceCollection services)
 		{
 
+			
+
 			services.AddControllers();
+
+			
+
+			//services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -56,8 +64,11 @@ namespace WebAPI
 					};
 				});
 
-			ServiceTool.Create(services);
+			services.AddDependencyResolvers(new ICoreModule[] {
+				new CoreModule()
+			});
 
+			/* Tasindi: onemsiz buralar
 			services.AddSingleton<ICarService, CarManager>();
 			services.AddSingleton<ICarDal, EfCarDal>();
 			services.AddSingleton<IColorService, ColorManager>();
@@ -70,7 +81,7 @@ namespace WebAPI
 			services.AddSingleton<ICustomerDal, EfCustomerDal>();
 			services.AddSingleton<IRentalService, RentalManager>();
 			services.AddSingleton<IRentalDal, EfRentalDal>();
-
+			*/
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });

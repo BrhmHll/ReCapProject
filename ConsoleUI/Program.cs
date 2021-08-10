@@ -1,4 +1,5 @@
 ﻿using Business.Concrete;
+using Core.Entities.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -62,7 +63,7 @@ namespace ConsoleUI
 			user.FirstName = "Engin";
 			user.LastName = "Demiroğ";
 			user.Email = "engindemirog0@gmail.com";
-			user.Password = "enginhoca";
+			//user.Password = "enginhoca";
 			var result = userManager.RemoveUser(user);
 			if (result.Success)
 				Console.WriteLine(result.Message);
@@ -76,7 +77,7 @@ namespace ConsoleUI
 			user.Email = "ibrahimsakar0@gmail.com";
 			user.FirstName = "İbrahim Halil";
 			user.LastName = "SAKAR";
-			user.Password = "12345678";
+			//user.Password = "12345678";
 			var result = userManager.UpdateUser(user);
 			if (result.Success)
 				Console.WriteLine(result.Message);
@@ -198,7 +199,7 @@ namespace ConsoleUI
 			user1.FirstName = "Engin";
 			user1.LastName = "Demiroğ";
 			user1.Email = "engindemirog0@gmail.com";
-			user1.Password = "enginhoca";
+			//user1.Password = "enginhoca";
 			var result = userManager.AddNewUser(user1);
 
 			if (result.Success == false)

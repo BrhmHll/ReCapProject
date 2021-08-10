@@ -24,7 +24,6 @@ namespace Business.Concrete
             return _userDal.GetClaims(user);
         }
 
-        [SecuredOperation("admin")]
         public void Add(User user)
         {
             _userDal.Add(user);
