@@ -2,6 +2,7 @@
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -28,6 +29,7 @@ namespace Business.Concrete
 
 		[SecuredOperation("admin")]
 		[ValidationAspect(typeof(CarValidator))]
+		[CacheRemoveAspect("ICarService.Get")]
 		public IResult AddNewCar(Car car)
 		{
 			var result = BusinessRules.Run(CheckIfCarDescriptionExists(car.Description));
@@ -43,7 +45,7 @@ namespace Business.Concrete
 			return new SuccessResult(Messages.AddedNewCar);			
 		}
 
-		[SecuredOperation("admin,personel")]
+		[CacheAspect]
 		public IDataResult<List<Car>> GetAll()
 		{
 			var result = _cardal.GetAll();
@@ -52,7 +54,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Car>>(result);
 		}
 
-		[SecuredOperation("admin,personel")]
+		[CacheAspect]
 		public IDataResult<Car> GetById(int id)
 		{
 			var result = _cardal.Get(i => i.CarId == id);
@@ -61,7 +63,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<Car>(result);
 		}
 
-		[SecuredOperation("admin,personel")]
+		[CacheAspect]
 		public IDataResult<List<CarDetailDto>> GetCarDetails()
 		{
 			var result = _cardal.GetCarDetails();
@@ -70,7 +72,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<CarDetailDto>>(result);
 		}
 
-		[SecuredOperation("admin,personel")]
+		[CacheAspect]
 		public IDataResult<CarDetailDto> GetCarDetailsById(int id)
 		{
 			var result = _cardal.GetCarDetailsById(id);
@@ -79,7 +81,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<CarDetailDto>(result);
 		}
 
-		[SecuredOperation("admin,personel")]
+		[CacheAspect]
 		public IDataResult<List<Car>> GetCarsByBrandId(int id)
 		{
 			var result = _cardal.GetAll(p => p.BrandId==id);
@@ -88,7 +90,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Car>>(result);
 		}
 
-		[SecuredOperation("admin,personel")]
+		[CacheAspect]
 		public IDataResult<List<Car>> GetCarsByColorId(int id)
 		{
 			var result = _cardal.GetAll(p => p.ColorId == id);
@@ -97,6 +99,7 @@ namespace Business.Concrete
 			return new SuccessDataResult<List<Car>>(result);
 		}
 		[SecuredOperation("admin")]
+		[CacheRemoveAspect("ICarService.Get")]
 		public IResult RemoveCar(Car car)
 		{
 			if (!CheckIfCarIdExists(car.CarId).Success)
@@ -108,8 +111,9 @@ namespace Business.Concrete
 
 		}
 
-		[SecuredOperation("admin,personel")]
+		[SecuredOperation("admin")]
 		[ValidationAspect(typeof(CarValidator))]
+		[CacheRemoveAspect("ICarService.Get")]
 		public IResult UpdateCar(Car car)
 		{
 			if (!CheckIfCarIdExists(car.CarId).Success)

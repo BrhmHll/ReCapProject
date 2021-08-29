@@ -29,7 +29,7 @@ namespace WebAPI
 			})
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
-					webBuilder.UseUrls(args[0]);
+					webBuilder.UseUrls();
 					webBuilder.UseStartup<Startup>();
 				});
 	}
